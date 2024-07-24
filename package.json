@@ -1,0 +1,29 @@
+{
+  "name": "news-aggregator",
+  "version": "1.0.0",
+  "description": "news aggregator",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdshone/news-aggregator.git"
+  },
+  "keywords": [
+    "news",
+    "aggregator",
+    "api"
+  ],
+  "author": "sdshone@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sdshone/news-aggregator/issues"
+  },
+  "homepage": "https://github.com/sdshone/news-aggregator#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
