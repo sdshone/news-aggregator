@@ -11,7 +11,7 @@ exports.register = async (req, res) => {
 
         res.sendStatus(201);
     } catch (err) {
-        console.log(err);
+        res.sendStatus(500);
     }
 };
 
@@ -27,6 +27,25 @@ exports.login = async (req, res) => {
         const token = jwt.sign({ username: user.username }, JWT_SECRET);
             res.json({ token });
         } catch (err) {
-            console.log(err);
+            res.sendStatus(500);
         }
+};
+
+exports.getPreferences = (req, res) => {
+    try {
+        const user = users.find(user => user.username === req.user.username);
+        res.json(user.preferences);
+    } catch (err) {
+        res.sendStatus(500);
+    }
+};
+
+exports.updatePreferences = (req, res) => {
+    try {
+        const user = users.find(user => user.username === req.user.username);
+        user.preferences = req.body;
+        res.sendStatus(200);
+    } catch (err) {
+        res.sendStatus(500);
+    }
 };
