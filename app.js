@@ -6,13 +6,15 @@ const PORT = 3000;
 
 // routes
 const userRoutes = require('./routes/users');
-
+const newsRoutes = require('./routes/news');
 
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/users', userRoutes);
+app.use('/news', newsRoutes);
+
 
 app.listen(PORT, (error) =>{
     if(!error){

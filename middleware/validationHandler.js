@@ -28,7 +28,6 @@ exports.preferencesHandler = (req, res, next) => {
     } else if (!categories.every(category => newsCategories.includes(category))) {
         error = `Invalid category sent. Valid categories ${newsCategories}`
     }
-    console.log(error);
 
     if (error) {
         return res.status(400).json({ errors: [error] });
