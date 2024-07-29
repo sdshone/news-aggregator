@@ -69,7 +69,7 @@ tap.test('GET /users/preferences without token', async (t) => {
 
 tap.test('PUT /users/preferences', async (t) => {
     const response = await server.put('/users/preferences').set('Authorization', `Bearer ${token}`).send({
-        preferences: {categories:['science', 'sports', 'business', 'health']}
+        preferences: {categories:['general']}
     });
     t.equal(response.status, 200);
 });
@@ -77,7 +77,7 @@ tap.test('PUT /users/preferences', async (t) => {
 tap.test('Check PUT /users/preferences', async (t) => {
     const response = await server.get('/users/preferences').set('Authorization', `Bearer ${token}`);
     t.equal(response.status, 200);
-    t.same(response.body.preferences, {categories:['science', 'sports', 'business', 'health']});
+    t.same(response.body.preferences, {categories:['general']});
     t.end();0
 });
 

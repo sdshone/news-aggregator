@@ -17,7 +17,7 @@ exports.getNews = async (preferences) => {
             const articleCategories = article.categories;
             const userCategories = preferences.categories;
             return articleCategories.some(category => userCategories.includes(category));
-            });
+        });
 
         if (filteredArticles.length >= 3){
             return filteredArticles
