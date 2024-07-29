@@ -1,21 +1,49 @@
 const axios = require('axios');
 const { NEWS_API_KEY, NEWS_API_URL, newsCategories, newsCache } = require('../data/in-memory-db');
 
+// Calculate newsIdCounter after tasks are loaded
+let newsIdCounter = newsCache.reduce((accumulator, news) => {
+    return Math.max(accumulator, parseInt(news.id));
+}, 0); // Start counting from the next number
+
 // Fetch news articles based on user preferences
 exports.getNews = async (preferences) => {
 
     // Check if cache is fresh else make request to the API
-    if (newsCache.data && newsCache.data.length && newsCache.lastUpdated > Date.now() - 3600000) {
-        return newsCache.data.filter(article => preferences.categories.includes(article.category));
-    } else {
-        const { language = 'en', categories = 'general'} = preferences;
-        const request_url = `${NEWS_API_URL}?api_token=${NEWS_API_KEY}&categories=${categories.join(',')}&language=${language}`;
-        console.log(request_url);
+    if (newsCache.data && 
+        newsCache.lastUpdated > Date.now() - 3600000
+    ) {
+        const filteredArticles = newsCache.data.filter(article => {
+            const articleCategories = article.categories;
+            const userCategories = preferences.categories;
+            return articleCategories.some(category => userCategories.includes(category));
+        });
+        if (filteredArticles.length >= 3){
+            return filteredArticles
+        }
 
-        const response = await axios.get(request_url);
-        return response.data.data;
+    } 
+    const { language = 'en', categories = 'general'} = preferences;
+    const request_url = `${NEWS_API_URL}?api_token=${NEWS_API_KEY}&categories=${categories.join(',')}&language=${language}`;
+    const response = await axios.get(request_url);
+    let articles = response.data.data.map(article => ({
+        id: newsIdCounter++,
+        title: article.title,
+        description: article.description,
+        language: language,
+        categories: article.categories,
+    }));
+    if (!newsCache.data){
+        newsCache.data = []
     }
+    newsCache.data.push(...articles);
+
+    newsCache.lastUpdated = new Date();
+    return articles;
+
 };
+
+
 
 // Update news cache with articles for all users
 exports.updateNewsCache = async () => {
@@ -28,19 +56,10 @@ exports.updateNewsCache = async () => {
                     'categories':[category],
                     'language':language,
                 }
-                let articles = await this.getNews(preferences);
-                articles = articles.map(article => ({
-                    title: article.title,
-                    description: article.description,
-                    language: language,
-                    category: category
-                }));
-                allArticles.push(...articles);
+                await this.getNews(preferences);
             }
-
         }
-        newsCache.data = allArticles;
-        newsCache.lastUpdated = new Date();
+
         console.log('News cache updated', newsCache);
     } catch (err) {
         console.log('Error updating news cache:', err);

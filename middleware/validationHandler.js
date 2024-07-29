@@ -20,6 +20,9 @@ exports.registerHandler = (req, res, next) => {
 exports.preferencesHandler = (req, res, next) => {
     
     const { preferences } = req.body;
+    if (!preferences){
+        return res.status(400).json({ errors: ['Required: preferences'] });
+    }
     const { categories } = preferences;
     err = null
     if (!Array.isArray(categories)) {
