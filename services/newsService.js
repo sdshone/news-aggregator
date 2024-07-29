@@ -2,9 +2,9 @@ const axios = require('axios');
 const { NEWS_API_KEY, NEWS_API_URL, newsCategories, newsCache } = require('../data/in-memory-db');
 
 // Calculate newsIdCounter after tasks are loaded
-let newsIdCounter = newsCache.reduce((accumulator, news) => {
+let newsIdCounter = newsCache.data.reduce((accumulator, news) => {
     return Math.max(accumulator, parseInt(news.id));
-}, 0); // Start counting from the next number
+}, 0)+1; // Start counting from the next number
 
 // Fetch news articles based on user preferences
 exports.getNews = async (preferences) => {
@@ -17,7 +17,8 @@ exports.getNews = async (preferences) => {
             const articleCategories = article.categories;
             const userCategories = preferences.categories;
             return articleCategories.some(category => userCategories.includes(category));
-        });
+            });
+
         if (filteredArticles.length >= 3){
             return filteredArticles
         }
@@ -38,7 +39,7 @@ exports.getNews = async (preferences) => {
     }
     newsCache.data.push(...articles);
 
-    newsCache.lastUpdated = new Date();
+    newsCache.lastUpdated = Date.now()
     return articles;
 
 };
