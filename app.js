@@ -20,7 +20,7 @@ app.use('/news', newsRoutes);
 
 
 // Run once when the server starts
-updateNewsCache();
+// updateNewsCache();
 // Periodically update news cache
 setInterval(updateNewsCache, 3600000); // every hour
 
@@ -34,3 +34,6 @@ app.listen(PORT, (error) =>{
     }
 }
 );
+
+
+module.exports = app;

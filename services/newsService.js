@@ -11,7 +11,7 @@ exports.getNews = async (preferences) => {
         const { language = 'en', categories = 'general'} = preferences;
         const request_url = `${NEWS_API_URL}?api_token=${NEWS_API_KEY}&categories=${categories.join(',')}&language=${language}`;
         console.log(request_url);
-        // return [];
+
         const response = await axios.get(request_url);
         return response.data.data;
     }

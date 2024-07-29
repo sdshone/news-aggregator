@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post('/register', 
     validationHandler.registerHandler,
+    validationHandler.preferencesHandler,
     userController.register
 );
 

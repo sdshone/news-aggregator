@@ -5,7 +5,9 @@ const { JWT_SECRET } = require('../data/in-memory-db');
  * Authenticate JWT token
  */
 exports.authenticateToken = (req, res, next) => {
-    const token = req.headers['authorization'];
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Extract the token after 'Bearer '
+
     if (!token) {
         return res.sendStatus(401);
     }
@@ -14,7 +16,6 @@ exports.authenticateToken = (req, res, next) => {
     if (err) {
         return res.sendStatus(403);
     }
-    console.log(user)
     req.user = user;
     next();
 });

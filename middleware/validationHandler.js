@@ -1,36 +1,38 @@
 const { newsCategories } = require('../data/in-memory-db')
+
 exports.registerHandler = (req, res, next) => {
     
-    const { username, password } = req.body;
-    const errors = [];
-    if (username.length < 5) {
-        errors.push('username length should be at least 5 characters.')
-    }
+    const { name, email, password } = req.body;
 
-    if (password.length < 5 ) {
-        errors.push('password length should be at least 5 characters.')
+    if (typeof name !== 'string' || name.length < 3) {
+        return res.status(400).json({ error: 'Name must be at least 3 characters long' });
     }
-
-    if (errors.length > 0) {
-        return res.status(400).json({ errors: errors });
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ error: 'Invalid email address' });
+    }
+    if (typeof password !== 'string' || password.length < 5) {
+        return res.status(400).json({ error: 'Password must be at least 5 characters long' });
     }
     next();
 };
 
 exports.preferencesHandler = (req, res, next) => {
     
-    const { categories } = req.body;
-    error = null
+    const { preferences } = req.body;
+    const { categories } = preferences;
+    err = null
     if (!Array.isArray(categories)) {
-        error = 'Invalid input. Expected categories as list of interested categories'
+        err = 'Invalid input. Expected categories as list of interested categories'
     } else if (categories.length === 0 ) {
-        error = 'Invalid input. Expected categories list cannot be empty'
+        err = 'Invalid input. Expected categories list cannot be empty'
     } else if (!categories.every(category => newsCategories.includes(category))) {
-        error = `Invalid category sent. Valid categories ${newsCategories}`
+        err = `Invalid category sent. Valid categories ${newsCategories}`
     }
 
-    if (error) {
-        return res.status(400).json({ errors: [error] });
+    if (err) {
+        console.log(err)
+        return res.status(400).json({ errors: [err] });
     }
     next();
 };
